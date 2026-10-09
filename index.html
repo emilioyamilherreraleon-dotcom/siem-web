@@ -135,10 +135,23 @@ footer{background:#06121f;color:#7d96ab;font-size:14px;padding:30px 0;text-align
 /* ===== EDITA SOLO ESTO ===== */
 const WHATSAPP = "524351128887";   // 52 + tu número a 10 dígitos, sin espacios
 const CORREO   = "emilioyamilherreraleon@gmail.com";
-const DESCARGA = "https://github.com/emilioyamilherreraleon-dotcom/contabilizador-actualizaciones/releases/latest";
+const DESCARGA = "https://github.com/emilioyamilherreraleon-dotcom/contabilizador-actualizaciones/releases/latest";   // respaldo
+const API_ULTIMA = "https://api.github.com/repos/emilioyamilherreraleon-dotcom/contabilizador-actualizaciones/releases/latest";
 /* =========================== */
 document.querySelectorAll("[data-wa]").forEach(a=>a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(a.dataset.wa));
-["descarga","descarga2"].forEach(i=>document.getElementById(i).href=DESCARGA);
+["descarga","descarga2"].forEach(i=>{
+  const b=document.getElementById(i); b.href=DESCARGA;
+  b.addEventListener("click",async e=>{
+    e.preventDefault(); const txt=b.textContent; b.textContent="Preparando descarga…";
+    try{
+      const r=await fetch(API_ULTIMA); const j=await r.json();
+      const exe=(j.assets||[]).find(a=>/^Instalar_SIEM.*\.exe$/i.test(a.name));
+      if(!exe) throw 0;
+      window.location.href=exe.browser_download_url;
+      setTimeout(()=>b.textContent=txt,2500);
+    }catch(_){ window.location.href=DESCARGA; }
+  });
+});
 const c=document.getElementById("correo");c.href="mailto:"+CORREO;c.textContent=CORREO;
 document.getElementById("anio").textContent=new Date().getFullYear();
 </script>
